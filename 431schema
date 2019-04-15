@@ -1,0 +1,218 @@
+CREATE TABLE zipcode (
+	zipcode		INT,
+	city		VARCHAR(80),
+	state		VARCHAR(80),
+	PRIMARY KEY(zipcode)
+);
+
+CREATE TABLE student (
+	email 		VARCHAR(120),
+	password	VARCHAR(120),
+	name		VARCHAR(80),
+	age			INT,
+	gender		VARCHAR(5),
+	major		VARCHAR(80),
+	street		VARCHAR(120),
+	zipcode		INT,
+	PRIMARY KEY(email),
+	FOREIGN KEY(zipcode) references zipcode(zipcode)
+);
+
+CREATE TABLE Department (
+	dept_id		INT,
+	dept_name	VARCHAR(20),
+	dept_head	VARCHAR(120), /*professor email*/
+	PRIMARY KEY(dept_id)
+);
+
+CREATE TABLE professor (
+	email 		VARCHAR(120),
+	password	VARCHAR(120),
+	name		VARCHAR(80),
+	age			INT,
+	gender		VARCHAR(5),
+	office_address		VARCHAR(20),
+	depart			INT,
+	title				VARCHAR(80),
+	PRIMARY KEY(email),
+	FOREIGN KEY(depart) references Department(dept_id)
+);
+/*
+CREATE TABLE professor (
+	email 		VARCHAR(120),
+	password	VARCHAR(120),
+	name		VARCHAR(80),
+	age			INT,
+	gender		VARCHAR(5),
+	office_address		VARCHAR(120),
+	department			VARCHAR(120),
+	title				VARCHAR(80),
+	PRIMARY KEY(email),
+	FOREIGN KEY(department) references Department(dept_name)
+); */
+
+CREATE TABLE Course (
+	course_id 	INT,
+	course_name VARCHAR(80),
+	course_description VARCHAR(120),
+	PRIMARY KEY(course_id)	
+);
+
+CREATE TABLE Prof_teams (
+	teaching_team_id	INT,
+	PRIMARY KEY(teaching_team_id)
+);
+
+CREATE TABLE Sections (
+	course_id 	INT,
+	sec_no		INT,
+	section_type VARCHAR(80),
+	sec_limit		INT,
+	teaching_team_id INT,
+	PRIMARY KEY(sec_no),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(teaching_team_id) references Prof_teams(teaching_team_id)
+);
+
+CREATE TABLE Enrolls (
+	student_email VARCHAR(120),
+	course_id  	  INT,
+	section_no	  INT,
+	FOREIGN KEY(student_email) references student(email),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(section_no) references Sections(sec_no)
+);
+
+CREATE TABLE Prof_teams_members (
+	pro_email	VARCHAR(120),
+	teaching_team_id INT,
+	FOREIGN KEY(pro_email) references professor(email),
+	FOREIGN KEY(teaching_team_id) references Prof_teams(teaching_team_id)
+);
+
+CREATE TABLE Homework (
+	course_id 	INT,
+	sec_no 		INT,
+	hw_no		INT,
+	hw_detail	VARCHAR(120),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no)
+);
+
+CREATE TABLE Homework_grades (
+	student_email	VARCHAR(120),
+	course_id 		INT,
+	sec_no 			INT,
+	hw_no			INT,
+	grade 			INT,
+	FOREIGN KEY(student_email) references student(email),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no)
+	/*FOREIGN KEY(hw_no) references Homework(hw_no)*/
+);
+
+/*CREATE TABLE Homework_grades (
+	student_email	VARCHAR(120),
+	course_id 		INT,
+	sec_no 			INT,
+	hw_no			INT,
+	grade 			INT,
+	FOREIGN KEY(student_email) references student(email),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no),
+	FOREIGN KEY(hw_no) references Homework(hw_no)
+);*/
+
+CREATE TABLE Exam (
+	course_id 	INT,
+	sec_no 		INT,
+	exam_no 	INT,
+	exam_details VARCHAR(120),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no)
+);
+
+CREATE TABLE Exam_grades (
+	student_email VARCHAR(120),
+	course_id 	  INT,
+	sec_no 		  INT,
+	exam_no		  INT,
+	grade 		  INT,
+	FOREIGN KEY(student_email) references student(email),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no)
+	/*FOREIGN KEY(exam_no) references Exam(exam_no)*/
+);
+
+/*CREATE TABLE Exam_grades (
+	student_email VARCHAR(120),
+	course_id 	  INT,
+	sec_no 		  INT,
+	exam_no		  INT,
+	grade 		  INT,
+	FOREIGN KEY(student_email) references student(email),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no),
+	FOREIGN KEY(exam_no) references Exam(exam_no)
+);*/
+
+CREATE TABLE Capstone_section (
+	course_id 	  INT,
+	sec_no 		  INT,
+	project_no	  INT,
+	sponsor_id	  VARCHAR(120),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no)
+);
+
+CREATE TABLE Capstone_Team (
+	course_id 	  INT,
+	sec_no 		  INT,
+	project_no	  INT,
+	capstone_team_id INT,
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no)
+	/*FOREIGN KEY(project_no) references Capstone_section(project_no)*/
+);
+
+/*CREATE TABLE Capstone_Team (
+	course_id 	  INT,
+	sec_no 		  INT,
+	project_no	  INT,
+	capstone_team_id INT,
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no),
+	FOREIGN KEY(project_no) references Capstone_section(project_no)
+);*/
+
+CREATE TABLE Capstone_Team_Members (
+	student_email VARCHAR(120),
+	course_id 	  INT,
+	sec_no 		  INT,
+	capstone_team_id INT,
+	FOREIGN KEY(student_email) references student(email),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no)
+	/*FOREIGN KEY(capstone_team_id) references Capstone_Team(capstone_team_id)*/
+);
+
+/*CREATE TABLE Capstone_Team_Members (
+	student_email VARCHAR(120),
+	course_id 	  INT,
+	sec_no 		  INT,
+	capstone_team_id INT,
+	FOREIGN KEY(student_email) references student(email),
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no),
+	FOREIGN KEY(capstone_team_id) references Capstone_Team(capstone_team_id)
+);*/
+
+CREATE TABLE Capstone_grades (
+	capstone_team_id INT,
+	course_id 	  INT,
+	sec_no 		  INT,
+	grade 		  INT,
+	/*FOREIGN KEY(capstone_team_id) references Capstone_Team(capstone_team_id),*/
+	FOREIGN KEY(course_id) references Course(course_id),
+	FOREIGN KEY(sec_no) references Sections(sec_no)
+);
